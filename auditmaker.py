@@ -16,7 +16,6 @@ def main (args):
         print(help_text)
     
     elif args [1] == "-csv":
-        print(args)
         CSV_to_audit_file.main(args[1:])
     
     else:

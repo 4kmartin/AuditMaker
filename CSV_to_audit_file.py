@@ -17,7 +17,6 @@ class FormatingError(Exception):
 
 
 def main(args:list):
-    print(args)
     help = """ 
     Sytax: python auditmaker.py -csv [path to csv file]
 
@@ -133,7 +132,6 @@ def make_undefined_item(item_description:[str]) -> custom_item:
             break
     try:
         registry = [item_description[1], value] + item_description[3].split("!")
-        print("%s::%s" % (isinstance(value, POLICY_DWORD), len(registry) == 4))
         assert isinstance(value, POLICY_DWORD)
         assert len(registry) == 4
     except (IndexError, AssertionError):
