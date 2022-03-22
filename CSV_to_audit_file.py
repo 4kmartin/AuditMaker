@@ -125,8 +125,8 @@ def make_undefined_item(item_description:[str]) -> custom_item:
             val = _type(item_description[2])
         except TypeError:
             continue
-        except IndexError as ie:
-            raise FormatingError(("?",3), "this value does not match the expected value: %s" % ie)
+        except IndexError:
+            raise FormatingError((3,00), "this value does not match the expected value: %s" % item_description)
         else:
             value = POLICY_DWORD(val)
             break
