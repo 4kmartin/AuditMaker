@@ -1,4 +1,4 @@
-from lib import *
+
 import CSV_to_audit_file
 from sys import argv
 
