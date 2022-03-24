@@ -79,7 +79,7 @@ class POLICY_SET(VALUE_TYPE):
             raise TypeError("%s is not a valid value for POLICY_SET" % str(value))
 
     def convert_to_DWORD(self) -> DWORD:
-        return DWORD(("Enabled","Disabled").index(self.value))
+        return DWORD(("Disabled","Enabled").index(self.value))
 
     def _validate(self, value:str)->bool:
         return value in ("Enabled","Disabled")
@@ -420,3 +420,20 @@ class SU_PROMPT_SET(VALUE_TYPE):
     def __repr__(self) -> str:
         return "\"%s\"" % self.value
 
+
+class INTERNET_ZONE_SET(VALUE_TYPE):
+
+    def __init__(self, value):
+        if self._validate(value):
+            self.value = value
+        else:
+            raise TypeError("%s is not a valid value for PROMPT_POLICY_SET" % str(value))
+
+    def convert_to_DWORD(self):
+        return DWORD(("Enable", "Disable", "Prompt").index(self.value))
+    
+    def _validate(self, value):
+        return value in ("Enable", "Disable", "Prompt")
+
+    def __repr__(self):
+        return "\"%s\"" % self.value
