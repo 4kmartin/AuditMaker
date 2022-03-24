@@ -93,7 +93,7 @@ class POLICY_DWORD(VALUE_TYPE):
     def __init__(self, value:(DWORD, RANGE)):
         if self._validate(value):
             self.value = value
-        elif isinstance(value, (POLICY_SET, ADMIN_PROMPT_SET, SU_PROMPT_SET)):
+        elif isinstance(value, (POLICY_SET, ADMIN_PROMPT_SET, SU_PROMPT_SET,INTERNET_ZONE_SET)):
             self.value = value.convert_to_DWORD()
         else: 
             raise TypeError("%s is not a valid value for POLICY_DWORD" % str(value))

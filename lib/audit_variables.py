@@ -329,9 +329,10 @@ implemented_classes = {
     },
 }
 
-type_list = (
+convertable_type_list = (
     DWORD,
     POLICY_SET,
     ADMIN_PROMPT_SET,
-    SU_PROMPT_SET
+    SU_PROMPT_SET,
+    INTERNET_ZONE_SET
 )
