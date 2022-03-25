@@ -442,6 +442,7 @@ class INTERNET_ZONE_SET(VALUE_TYPE):
 class JAVA_PERMISSIONS_SET(VALUE_TYPE):
 
     def __init__(self, value:str):
+        value = value.title()
         if self._validate(value):
             self.value = value
         else:
