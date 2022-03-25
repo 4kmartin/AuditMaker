@@ -1,4 +1,3 @@
-from lib.audit_tags import *
 from lib.audit_types import *
 from lib.audit_classes import *
 
@@ -329,11 +328,3 @@ implemented_classes = {
     },
 }
 
-convertable_type_list = (
-    DWORD,
-    POLICY_SET,
-    ADMIN_PROMPT_SET,
-    SU_PROMPT_SET,
-    INTERNET_ZONE_SET,
-    JAVA_PERMISSIONS_SET
-)

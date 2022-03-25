@@ -1,7 +1,6 @@
 import re
 
 
-
 class PolicyTypeError(Exception):
 
     def __init__(self, erronious_input:str,field:str):
@@ -93,7 +92,7 @@ class POLICY_DWORD(VALUE_TYPE):
     def __init__(self, value:(DWORD, RANGE)):
         if self._validate(value):
             self.value = value
-        elif isinstance(value, (POLICY_SET, ADMIN_PROMPT_SET, SU_PROMPT_SET,INTERNET_ZONE_SET,JAVA_PERMISSIONS_SET)):
+        elif isinstance(value, convertable_type_list):
             self.value = value.convert_to_DWORD()
         else: 
             raise TypeError("%s is not a valid value for POLICY_DWORD" % str(value))
@@ -460,3 +459,34 @@ class JAVA_PERMISSIONS_SET(VALUE_TYPE):
 
     def __repr__(self) -> str:
         return "\"%s\"" % self.value
+
+
+class DMA_SET(VALUE_TYPE):
+
+    def __init__(self, value:str):
+        value = value.capitalize()
+        if self._validate(value):
+            self.value = value
+        else:
+            raise TypeError("%s is not a valid value for JAVA_PERMISSIONS_SET" % str(value))
+
+    def convert_to_DWORD(self) -> DWORD:
+        return DWORD(("Block all", "Only while logged in", "Allow all").index(self.value))
+    
+    def _validate(self, value:str) -> bool:
+        return value in ("Block all", "Only while logged in", "Allow all")
+
+    def __repr__(self) -> str:
+        return "\"%s\"" % self.value
+
+
+
+convertable_type_list = (
+    DWORD,
+    POLICY_SET,
+    ADMIN_PROMPT_SET,
+    SU_PROMPT_SET,
+    INTERNET_ZONE_SET,
+    JAVA_PERMISSIONS_SET,
+    DMA_SET
+)
