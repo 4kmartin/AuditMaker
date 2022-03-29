@@ -12,11 +12,14 @@ class PolicyTypeError(Exception):
 
 class VALUE_TYPE:
 
+    def __init__(self, value):
+        self.value = value
+
     def _validate(self, value:any) -> bool:
         return True
 
     def __repr__(self) -> str:
-        return ""
+        return "%s" % str(self.value)
 
 
 class DWORD(VALUE_TYPE):
@@ -468,7 +471,7 @@ class DMA_SET(VALUE_TYPE):
         if self._validate(value):
             self.value = value
         else:
-            raise TypeError("%s is not a valid value for JAVA_PERMISSIONS_SET" % str(value))
+            raise TypeError("%s is not a valid value for DMA_SET" % str(value))
 
     def convert_to_DWORD(self) -> DWORD:
         return DWORD(("Block all", "Only while logged in", "Allow all").index(self.value))
@@ -480,6 +483,101 @@ class DMA_SET(VALUE_TYPE):
         return "\"%s\"" % self.value
 
 
+class SSL_FALLBACK(VALUE_TYPE):
+
+    def __init__(self, value:str):
+        value = value.title()
+        if self._validate(value):
+            self.value = value
+        else:
+            raise TypeError("%s is not a valid value for SSL_FALLBACK" % str(value))
+    
+    def convert_to_DWORD(self) -> DWORD:
+        return DWORD(("No Sites", "Non-Protected Mode Sites", "All Sites").index(self.value))
+
+    def _validate(self, value) -> bool:
+        return value in ("No Sites", "Non-Protected Mode Sites", "All Sites")
+    
+    def __repr__(self) ->str:
+        return "\"%s\"" % self.value
+
+
+class DEFENDER_SET(VALUE_TYPE):
+
+    def __init__(self, value:str):
+        value = value.title()
+        if self._validate(value):
+            self.value = value
+        else:
+            raise TypeError("%s is not a valid value for DEFENDER_SET" % str(value))
+
+    def convert_to_DWORD(self) -> DWORD:
+        return DWORD(("Disable (Default)","Block", "Audit Mode").index(self.value))
+
+    def _validate(self, value:str) -> bool:
+        return value in ("Disable (Default)","Block", "Audit Mode")
+
+    def __repr__(self)->str:
+        return "\"%s\"" % self.value
+
+
+class SMB_DRIVER(VALUE_TYPE):
+
+    def __init__(self, value:str):
+        value = value.capitalize()
+        if self._validate(value):
+            self.value = value
+        else:
+            raise TypeError("%s is not a valid value for SMB_DRIVER" % str(value))
+
+    def convert_to_DWORD(self) -> DWORD:
+        return DWORD({"Disable driver":4,
+        "Manual start":3, 
+        "Automatic start":2}[self.value])
+
+    def _validate(self, value:str) -> bool:
+        return value in ("Disable driver","Manual start", "Automatic start")
+
+    def __repr__(self)->str:
+        return "\"%s\"" % self.value
+
+
+class ORACLE_REMEDIATION(VALUE_TYPE):
+
+    def __init__(self, value:str):
+        value = value.title()
+        if self._validate(value):
+            self.value = value
+        else:
+            raise TypeError("%s is not a valid value for ORACLE_REMEDIATION" % str(value))
+
+    def convert_to_DWORD(self) -> DWORD:
+        return DWORD(("Force Updated Clients","Mitigated","Vulnerable").index(self.value))
+
+    def _validate(self, value: str) -> bool:
+        return value in ("Force Updated Clients","Mitigated","Vulnerable")
+    
+    def __repr__(self)->str:
+        return "\"%s\"" % self.value
+
+
+class JOIN_MAPS(VALUE_TYPE):
+
+    def __init__(self, value:str):
+        if self._validate(value):
+            self.value = value
+        else:
+            raise TypeError("%s is not a valid value for JOIN_MAPS" % str(value))
+
+    def convert_to_DWORD(self) -> DWORD:
+        return DWORD(("Disabled", "Basic MAPS", "Advanced MAPS").index(self.value))
+
+    def _validate(self, value: str) -> bool:
+        return value in ("Disabled", "Basic MAPS", "Advanced MAPS")
+    
+    def __repr__(self)->str:
+        return "\"%s\"" % self.value
+
 
 convertable_type_list = (
     DWORD,
@@ -488,5 +586,10 @@ convertable_type_list = (
     SU_PROMPT_SET,
     INTERNET_ZONE_SET,
     JAVA_PERMISSIONS_SET,
-    DMA_SET
+    DMA_SET,
+    SSL_FALLBACK,
+    DEFENDER_SET,
+    SMB_DRIVER,
+    ORACLE_REMEDIATION,
+    JOIN_MAPS
 )
