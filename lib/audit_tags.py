@@ -225,3 +225,28 @@ class AUDIT_POLICY_SUBCATEGORY(custom_item):
 
     def enumerate_fields(self) -> tuple:
         return super().enumerate_fields() + tuple(["audit_policy_subcategory: \"%s\"" % self.audit_policy_subcategory])
+
+
+class WMI_POLICY(custom_item):
+    type = "WMI_POLICY"
+
+    def __init__(self, description:str, value_type:str, value_data:POLICY_TEXT,wmi_namespace:str,wmi_request:str,wmi_attribute:str,wmi_keys:str,wmi_option = None,wmi_exclude_result= None,only_show_query_output=None,check_type=None):
+        super().__init__(description, value_type, value_data,check_type)
+        self.wmi_namespace = wmi_namespace
+        self.wmi_request = wmi_request
+        self.wmi_attribute = wmi_attribute
+        self.wmi_keys = wmi_keys
+        self.wmi_option = wmi_option
+        self.wmi_exclude_result = wmi_exclude_result
+        self.only_show_query_output = only_show_query_output
+
+    def enumerate_fields(self)->tuple:
+        fields = list(super().enumerate_fields())
+        for k in self.__dict__:
+            if self.__dict__[k] is not None:
+                if "%s: %s" %(k, self.__dict__[k]) not in fields:
+                    add = "%s: \"%s\"" % (k, self.__dict__[k])
+                    if add not in fields:
+                        fields.append(add)
+        return tuple(fields)
+
