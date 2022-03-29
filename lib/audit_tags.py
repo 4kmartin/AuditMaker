@@ -230,12 +230,12 @@ class AUDIT_POLICY_SUBCATEGORY(custom_item):
 class WMI_POLICY(custom_item):
     type = "WMI_POLICY"
 
-    def __init__(self, description:str, value_type:str, value_data:POLICY_TEXT,wmi_namespace:str,wmi_request:str,wmi_attribute:str,wmi_keys:str,wmi_option = None,wmi_exclude_result= None,only_show_query_output=None,check_type=None):
+    def __init__(self, description:str, value_type:str, value_data:POLICY_TEXT,wmi_namespace:str,wmi_request:str,wmi_attribute:str,wmi_key:str,wmi_option = None,wmi_exclude_result= None,only_show_query_output=None,check_type=None):
         super().__init__(description, value_type, value_data,check_type)
         self.wmi_namespace = wmi_namespace
         self.wmi_request = wmi_request
         self.wmi_attribute = wmi_attribute
-        self.wmi_keys = wmi_keys
+        self.wmi_key = wmi_key
         self.wmi_option = wmi_option
         self.wmi_exclude_result = wmi_exclude_result
         self.only_show_query_output = only_show_query_output
