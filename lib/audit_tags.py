@@ -230,7 +230,7 @@ class AUDIT_POLICY_SUBCATEGORY(custom_item):
 class WMI_POLICY(custom_item):
     type = "WMI_POLICY"
 
-    def __init__(self, description:str, value_type:str, value_data:POLICY_TEXT,wmi_namespace:str,wmi_request:str,wmi_attribute:str,wmi_key:str,wmi_option = None,wmi_exclude_result= None,only_show_query_output=None,check_type=None):
+    def __init__(self, description:str, value_type:str, value_data:POLICY_TEXT,wmi_namespace:str,wmi_request:str,wmi_attribute:str=None,wmi_key:str=None,wmi_option = None,wmi_exclude_result= None,only_show_query_output=None,check_type=None):
         super().__init__(description, value_type, value_data,check_type)
         self.wmi_namespace = wmi_namespace
         self.wmi_request = wmi_request
@@ -242,11 +242,14 @@ class WMI_POLICY(custom_item):
 
     def enumerate_fields(self)->tuple:
         fields = list(super().enumerate_fields())
-        for k in self.__dict__:
+        ignore = tuple(custom_item("", "", POLICY_TEXT("")).__dict__.keys())
+        keep = [x for x in self.__dict__.keys() if x not in ignore]
+        for k in keep:
             if self.__dict__[k] is not None:
-                if "%s: %s" %(k, self.__dict__[k]) not in fields:
+                if k in ("wmi_namespace","wmi_request","wmi_attribute","wmi_key"):
                     add = "%s: \"%s\"" % (k, self.__dict__[k])
-                    if add not in fields:
-                        fields.append(add)
+                else: 
+                    add = "%s: %s" % (k, self.__dict__[k])
+                fields.append(add)
         return tuple(fields)
 
