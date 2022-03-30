@@ -12,9 +12,11 @@ def make_wmi_query(description, value_type, value_data, wmi_namespace,set_option
         wmi_key = input("Key:\n.> ")
     return WMI_POLICY(description, value_type, POLICY_TEXT(value_data), wmi_namespace, wmi_request, wmi_attribute=wmi_attribute, wmi_key=wmi_key, only_show_query_output=only_show_query_output)
     
-
-def make_registry_query()->REGISTRY_SETTING:
-    pass
+def make_registry_query(description:str, value: (POLICY_DWORD, POLICY_TEXT), reg_key:str, reg_item: str) -> REGISTRY_SETTING:
+    if isinstance(value, POLICY_DWORD):
+        return REGISTRY_SETTING(description, "POLICY_DWORD", value, reg_key, reg_item)
+    else:
+        return REGISTRY_SETTING(description, "POLICY_TEXT", value, reg_key, reg_item)
 
 def make_policy_query()->Tag:
     pass
@@ -44,10 +46,15 @@ if __name__ == "__main__":
     wmi_namespace = "root\Microsoft\SecurityClient"
     wmi_request = "SELECT %s FROM AntimalwareHealthStatus"
 
-    test.append(make_wmi_query(description , value_type, value_data, wmi_namespace))
-    
+    test.append(make_wmi_query(description % "AntispywareEnabled", value_type, value_data, wmi_namespace,False,wmi_request=wmi_request % "AntispywareEnabled", only_show_query_output="YES"))
+    test.append(make_wmi_query(description % "AntispywareSignatureAge", value_type, value_data, wmi_namespace,False,wmi_request=wmi_request % "AntispywareSignatureAge", only_show_query_output="YES"))
+    test.append(make_wmi_query(description % "AntivirusEnabled", value_type, value_data, wmi_namespace,False,wmi_request=wmi_request % "AntivirusEnabled", only_show_query_output="YES"))
+    test.append(make_wmi_query(description % "AntivirusSignatureAge", value_type, value_data, wmi_namespace,False,wmi_request=wmi_request % "AntivirusSignatureAge", only_show_query_output="YES"))
+    test.append(make_wmi_query(description % "LastFullScanAge" ,value_type,value_data,wmi_namespace,False,wmi_request=wmi_request % "LastFullScanAge",only_show_query_output="YES"))
+    test.append(make_registry_query(description % "Windows Version", "21H1", "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion"))
+
     contents = write_audit_file_contents(test)
-    f = open("test.audit","w")
+    f = open("testbaseline.audit","w")
     f.write(contents)
     f.close()
     print(contents)
