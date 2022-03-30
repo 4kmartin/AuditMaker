@@ -1,7 +1,4 @@
-from lib.audit_classes import *
-from lib.audit_tags import *
-from lib.audit_types import *
-from lib.audit_variables import *
+from lib import *
 import re
 
 
@@ -24,7 +21,8 @@ def main(args:list):
 
     Note:
     the csv file can befound on microsoft's website in the same zip file containing the 
-    Microsoft Security Compliance Toolkit (MSCT)
+    Microsoft Security Compliance Toolkit (MSCT). If a cell in this sheet contains multiple lines, 
+    replace the newline character (ctrl+j) with a semi-colon ';'.
     """
     try:
         if args[1] in ('-h','--help'):
@@ -34,6 +32,7 @@ def main(args:list):
             open_file = open(path_to_csv_file)
             csv = open_file.read()
             open_file.close()
+            csv = csv.replace('"', "")
             items = parse_file(csv)
             audit_file_contents = write_audit_file_contents(items)
             open_file = open(path_to_csv_file.replace("csv", "audit").replace("CSV", "audit"),"w")
@@ -87,7 +86,7 @@ def make_item(item_description:[str]) -> Tag:
     else:
         return make_undefined_item(item_description)
 
-def make_predefined_item(item_description:[str])->item:
+def make_predefined_item(item_description:[str]) -> item:
     if predefined_items[item_description[0]][item_description[1]] in (POLICY_DWORD,POLICY_DAY,POLICY_KBYTE):
         dword = re.compile("^\\d+$")
         rng = re.compile("^\\[\\d+..\\d+\\]$")
@@ -102,7 +101,7 @@ def make_predefined_item(item_description:[str])->item:
     else:
         return item(item_description[1],predefined_items[item_description[0]][item_description[1]](item_description[2]))
 
-def make_custom_item(item_description:[str])->custom_item:
+def make_custom_item(item_description:[str]) -> custom_item:
     custom_item = implemented_classes[item_description[0]][item_description[1]][0]
     val_type = implemented_classes[item_description[0]][item_description[1]][1]
     if val_type in (POLICY_DWORD,POLICY_DAY,POLICY_KBYTE):
@@ -120,7 +119,7 @@ def make_custom_item(item_description:[str])->custom_item:
 
 def make_undefined_item(item_description:[str]) -> custom_item:
     value = None
-    for _type in type_list:
+    for _type in convertable_type_list:
         try:
             val = _type(item_description[2])
         except TypeError:
@@ -130,17 +129,22 @@ def make_undefined_item(item_description:[str]) -> custom_item:
         else:
             value = POLICY_DWORD(val)
             break
+    if value is None:
+        value = POLICY_TEXT(item_description[2])
     try:
         registry = [item_description[1], value] + item_description[3].split("!")
-        assert isinstance(value, POLICY_DWORD)
+        assert isinstance(value, (POLICY_DWORD, POLICY_TEXT))
         assert len(registry) == 4
     except (IndexError, AssertionError):
         raise TypeError("%s::%s is not yet implemented" % (item_description[0], item_description[1]))
     else:
         return make_registry_item(*registry)
 
-def make_registry_item(description:str, value: POLICY_DWORD, reg_key:str, reg_item: str)-> REGISTRY_SETTING:
-    return REGISTRY_SETTING(description, "POLICY_DWORD", value, reg_key, reg_item)
+def make_registry_item(description:str, value: (POLICY_DWORD, POLICY_TEXT), reg_key:str, reg_item: str) -> REGISTRY_SETTING:
+    if isinstance(value, POLICY_DWORD):
+        return REGISTRY_SETTING(description, "POLICY_DWORD", value, reg_key, reg_item)
+    else:
+        return REGISTRY_SETTING(description, "POLICY_TEXT", value, reg_key, reg_item)
 
 def write_audit_file_contents(list_of_items:[Tag]) -> str:
     contents = "<check_type: \"Windows\" version:\"2\">\n\t<group_policy: \"Audit file for Windows 10\">"
