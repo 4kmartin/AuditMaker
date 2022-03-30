@@ -1,0 +1,6 @@
+error.log
+audit
+csv
+__pycache__
+lib\__pycache__
+*.audit
