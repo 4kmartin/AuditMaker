@@ -579,6 +579,26 @@ class JOIN_MAPS(VALUE_TYPE):
         return "\"%s\"" % self.value
 
 
+class SERVICE_SET(VALUE_TYPE):
+    value_type = "SERVICE_SET"
+
+    def __init__(self, value:str):
+        if self._validate(value):
+            self.value = value
+        else:
+            raise TypeError("%s is not a valid value for SERVICE_SET" % str(value))
+    
+    def convert_to_DWORD(self) -> DWORD:
+        return DWORD(("Automatic", "Manual", "Disabled").index(self.value))
+
+    def _validate(self, value) -> bool:
+        return value in ("Automatic", "Manual", "Disabled")
+
+    def __repr__(self) -> str:
+        return "\"%s\"" % self.value
+
+
+
 convertable_type_list = (
     DWORD,
     POLICY_SET,
