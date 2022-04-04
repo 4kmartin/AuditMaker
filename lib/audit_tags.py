@@ -252,4 +252,77 @@ class WMI_POLICY(custom_item):
                     add = "%s: %s" % (k, self.__dict__[k])
                 fields.append(add)
         return tuple(fields)
+     
 
+
+class CONDITION_TAG(Tag):
+
+    def __init__(self,type:str,items:[Tag]):
+        if not isinstance(items, (tuple,list,dict)):
+            raise TypeError("The CONDITION TAG reuires its items to be contained within an iterable, prefferably a tuple.\nThe supplied value :: %s :: does not meet that criteria" % str(items))
+        if type not in ("or","and"):
+            raise TypeError("The CONDITION TAG can only be either \"and\" or \"or\". \nThe supplied value :: %s :: does not meet that criteria" % type)
+        for i in items:
+            if not isinstance(i, Tag):
+                raise TypeError("The CONDITION TAG must contain other tags.\nThe supplied value :: %s :: does not meet that criteria" % i)
+        self.type = type
+        self.items = items
+
+    def __repr__(self) -> str:
+        return "\n\t\t<condition type: %s>%s\n\t\t</condition>" % (self.type, str(list(self.items)).replace("\n\t", "\n\t\t").replace("[", "").replace("]", ""))
+
+
+class THEN_TAG:
+    
+    def __init__(self,contents:[Tag]):
+        if not isinstance(contents, (list,tuple,dict)):
+            raise TypeError
+        for i in contents:
+            if not isinstance(i, Tag):
+                raise TypeError
+        self.contents = contents
+    
+    def __repr__(self) -> str:
+        return "\n\t\t<then>%s\n\t\t</then>" % str(list(self.contents)).replace("\n\t", "\n\t\t").replace("[", "").replace("]", "")
+
+
+class ELSE_TAG:
+
+    def __init__(self,contents:[Tag]):
+        if not isinstance(contents, (list,tuple,dict)):
+            raise TypeError
+        for i in contents:
+            if not isinstance(i, Tag):
+                raise TypeError
+        self.contents = contents
+    
+    def __repr__(self) -> str:
+        return "\n\t\t<else>%s\n\t\t</else>" % str(list(self.contents)).replace("\n\t", "\n\t\t").replace("[", "").replace("]", "")
+
+
+class REPORT_TAG(Tag):
+
+    def __init__(self,type:str,description:str):
+        self.type = type
+        self.description = description
+
+    def __repr__(self) -> str:
+        return "\n\t\t<report type: \"%s\">\n\t\t\tdescription: \"%s\"\n\t\t</report>" % (self.type, self.description)
+
+
+class IF_TAG(Tag):
+
+    def __init__(self,condition:CONDITION_TAG, then:THEN_TAG, _else:ELSE_TAG):
+        if not isinstance(condition, CONDITION_TAG):
+            raise TypeError
+        if not isinstance(then, THEN_TAG):
+            raise TypeError
+        if not isinstance(_else, ELSE_TAG):
+            raise TypeError
+        self.condition = condition
+        self.then = then
+        self.otherwise = _else
+
+    def __repr__(self) -> str:
+        return "\n\t\t<if>%s\n\t\t</if>" % "".join([str(self.condition), str(self.then), str(self.otherwise)]).replace("\n\t", "\n\t\t")
+   
