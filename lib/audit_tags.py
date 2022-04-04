@@ -254,7 +254,6 @@ class WMI_POLICY(custom_item):
         return tuple(fields)
      
 
-
 class CONDITION_TAG(Tag):
 
     def __init__(self,type:str,items:[Tag]):
