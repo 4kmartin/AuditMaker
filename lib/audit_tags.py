@@ -267,7 +267,7 @@ class CONDITION_TAG(Tag):
         self.type = type
         self.items = items
 
-    def __repr__(self) -> str:
+    def write(self) -> str:
         return "\n\t\t<condition type: %s>%s\n\t\t</condition>" % (self.type, str(list(self.items)).replace("\n\t", "\n\t\t").replace("[", "").replace("]", ""))
 
 
@@ -281,7 +281,7 @@ class THEN_TAG:
                 raise TypeError
         self.contents = contents
     
-    def __repr__(self) -> str:
+    def write(self) -> str:
         return "\n\t\t<then>%s\n\t\t</then>" % str(list(self.contents)).replace("\n\t", "\n\t\t").replace("[", "").replace("]", "")
 
 
@@ -295,7 +295,7 @@ class ELSE_TAG:
                 raise TypeError
         self.contents = contents
     
-    def __repr__(self) -> str:
+    def write(self) -> str:
         return "\n\t\t<else>%s\n\t\t</else>" % str(list(self.contents)).replace("\n\t", "\n\t\t").replace("[", "").replace("]", "")
 
 
@@ -305,7 +305,7 @@ class REPORT_TAG(Tag):
         self.type = type
         self.description = description
 
-    def __repr__(self) -> str:
+    def write(self) -> str:
         return "\n\t\t<report type: \"%s\">\n\t\t\tdescription: \"%s\"\n\t\t</report>" % (self.type, self.description)
 
 
@@ -322,6 +322,6 @@ class IF_TAG(Tag):
         self.then = then
         self.otherwise = _else
 
-    def __repr__(self) -> str:
+    def write(self) -> str:
         return "\n\t\t<if>%s\n\t\t</if>" % "".join([str(self.condition), str(self.then), str(self.otherwise)]).replace("\n\t", "\n\t\t")
    
