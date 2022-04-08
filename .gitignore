@@ -4,3 +4,4 @@ csv
 __pycache__
 lib\__pycache__
 *.audit
+backup

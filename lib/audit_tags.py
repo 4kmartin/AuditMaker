@@ -4,7 +4,7 @@ from lib.audit_types import VALUE_TYPE, AUDIT_SET, PolicyTypeError, POLICY_TEXT
 
 class Tag:
     def write(self) -> str:
-        return "\n\t\t<tag/>"
+        return "\n<tag/>"
     
     def __repr__(self) -> str:
         return self.write()
@@ -17,7 +17,7 @@ class item (Tag):
         self.value = value
 
     def write(self) -> str:
-        return "\n\t\t<item>\n\t\t\tname: \"%s\"\n\t\t\tvalue: %s\n\t\t</item>" % (self.name, self.value)
+        return "\n<item>\n\tname: \"%s\"\n\tvalue: %s\n</item>" % (self.name, self.value)
 
 
 class custom_item(Tag):
@@ -43,10 +43,10 @@ class custom_item(Tag):
         return tuple(fields)
     
     def write(self) -> str:
-        out = "\n\t\t<custom_item>"
+        out = "\n<custom_item>"
         for field in self.enumerate_fields():
-            out += "\n\t\t\t"+field
-        return out + "\n\t\t</custom_item>"
+            out += "\n\t%s" % field
+        return out + "\n\</custom_item>"
 
 
 class PASSWORD_POLICY(custom_item):
@@ -268,7 +268,7 @@ class CONDITION_TAG(Tag):
         self.items = items
 
     def write(self) -> str:
-        return "\n\t\t<condition type: %s>%s\n\t\t</condition>" % (self.type, str(list(self.items)).replace("\n\t", "\n\t\t").replace("[", "").replace("]", ""))
+        return "\n<condition type: %s>%s\n</condition>" % (self.type, str(list(self.items)).replace("\n", "\n\t").replace("[", "").replace("]", ""))
 
 
 class THEN_TAG:
@@ -282,7 +282,7 @@ class THEN_TAG:
         self.contents = contents
     
     def write(self) -> str:
-        return "\n\t\t<then>%s\n\t\t</then>" % str(list(self.contents)).replace("\n\t", "\n\t\t").replace("[", "").replace("]", "")
+        return "\n<then>%s\n</then>" % str(list(self.contents)).replace("\n", "\n\t").replace("[", "").replace("]", "")
 
 
 class ELSE_TAG:
@@ -296,7 +296,7 @@ class ELSE_TAG:
         self.contents = contents
     
     def write(self) -> str:
-        return "\n\t\t<else>%s\n\t\t</else>" % str(list(self.contents)).replace("\n\t", "\n\t\t").replace("[", "").replace("]", "")
+        return "\n<else>%s\n</else>" % str(list(self.contents)).replace("\n", "\n\t").replace("[", "").replace("]", "")
 
 
 class REPORT_TAG(Tag):
@@ -306,7 +306,7 @@ class REPORT_TAG(Tag):
         self.description = description
 
     def write(self) -> str:
-        return "\n\t\t<report type: \"%s\">\n\t\t\tdescription: \"%s\"\n\t\t</report>" % (self.type, self.description)
+        return "\n<report type: \"%s\">\n\tdescription: \"%s\"\n</report>" % (self.type, self.description)
 
 
 class IF_TAG(Tag):
@@ -325,3 +325,48 @@ class IF_TAG(Tag):
     def write(self) -> str:
         return "\n\t\t<if>%s\n\t\t</if>" % "".join([str(self.condition), str(self.then), str(self.otherwise)]).replace("\n\t", "\n\t\t")
    
+
+class BODY(Tag):
+
+    def __init__(self, contents:[Tag]):
+        try:
+            assert isinstance(contents[0], Tag)
+        except (AssertionError, IndexError):
+            raise TypeError
+        self.contents = contents
+    
+    def write(self) -> str:
+        return str(self.contents).replace("[", "").replace("]", "")
+
+
+class GROUP_POLICY(Tag):
+
+    def __init__(self, comment:str ,contents:BODY):
+        try:
+            assert isinstance(contents, BODY)
+            assert isinstance(comment, str)
+
+        except AssertionError:
+            raise TypeError
+        self.comment = comment
+        self.contents = contents
+    
+    def write(self) -> str:
+        return "\n<group_policy: %s>%s\n</group_policy>" % (self.comment, self.contents.write().replace("\n", "\n\t"))
+
+
+class CHECK_TYPE(Tag):
+
+    def __init__(self, check_type: str, contents: Tag):
+        try:
+            assert isinstance(contents, (BODY, GROUP_POLICY))
+            assert check_type in ["\"Windows\" version:\"2\"","Unix"]
+            if check_type =="\"Windows\" version:\"2\"":
+                assert isinstance(contents, GROUP_POLICY)
+        except AssertionError:
+            raise TypeError
+        self.type = check_type
+        self.contents = contents
+    
+    def write(self) -> str:
+        return "<check_type: %s>%s\n</checktype>" % (self.type, self.contents.write().replace("\n", "\n\t"))

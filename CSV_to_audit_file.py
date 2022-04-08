@@ -28,16 +28,10 @@ def main(args:list):
         if args[1] in ('-h','--help'):
             print(help)
         else:
-            path_to_csv_file = args[1]
-            open_file = open(path_to_csv_file)
-            csv = open_file.read()
-            open_file.close()
-            csv = csv.replace('"', "")
+            path_to_file = args[1]
+            csv = getfilecontents(path_to_file).replace("\"", "")
             items = parse_file(csv)
-            audit_file_contents = write_audit_file_contents(items)
-            open_file = open(path_to_csv_file.replace("csv", "audit").replace("CSV", "audit"),"w")
-            open_file.write(audit_file_contents)
-            open_file.close()
+            savefile(path_to_csv_file.replace("csv", "audit").replace("CSV", "audit"),write_audit_file_contents(items))
     except (FileNotFoundError, PermissionError):
         print("%s: is not a valid file path" % path_to_csv_file )
         print("if the file exists make sure you have permission to read it")
@@ -139,21 +133,6 @@ def make_undefined_item(item_description:[str]) -> custom_item:
         raise TypeError("%s::%s is not yet implemented" % (item_description[0], item_description[1]))
     else:
         return make_registry_item(*registry)
-
-def make_registry_item(description:str, value: (POLICY_DWORD, POLICY_TEXT), reg_key:str, reg_item: str) -> REGISTRY_SETTING:
-    if isinstance(value, POLICY_DWORD):
-        return REGISTRY_SETTING(description, "POLICY_DWORD", value, reg_key, reg_item)
-    else:
-        return REGISTRY_SETTING(description, "POLICY_TEXT", value, reg_key, reg_item)
-
-def write_audit_file_contents(list_of_items:[Tag]) -> str:
-    contents = "<check_type: \"Windows\" version:\"2\">\n\t<group_policy: \"Audit file for Windows 10\">"
-    for item in list_of_items:
-        if issubclass(item.__class__, Tag):
-            contents += item.write()
-        else:
-            continue
-    return contents + "\n\t</group_policy>\n</check_type>"
 
 def check_headers(header_row:[str]):
     if header_row == "":
