@@ -146,7 +146,7 @@ class GROUP_POLICY(Tag):
         self.contents = contents
     
     def write(self) -> str:
-        return "\n<group_policy: %s>%s\n</group_policy>" % (self.comment, self.contents.write().replace("\n", "\n\t"))
+        return "\n<group_policy: \"%s\">%s\n</group_policy>" % (self.comment, self.contents.write().replace("\n", "\n\t"))
 
 
 class CHECK_TYPE(Tag):
@@ -154,7 +154,7 @@ class CHECK_TYPE(Tag):
     def __init__(self, check_type: str, contents: Tag):
         try:
             assert isinstance(contents, (BODY, GROUP_POLICY))
-            assert check_type in ["\"Windows\" version:\"2\"","Unix"]
+            assert check_type in ["Windows\" version:\"2","Unix"]
             if check_type =="\"Windows\" version:\"2\"":
                 assert isinstance(contents, GROUP_POLICY)
         except AssertionError:
@@ -163,4 +163,4 @@ class CHECK_TYPE(Tag):
         self.contents = contents
     
     def write(self) -> str:
-        return "<check_type: %s>%s\n</checktype>" % (self.type, self.contents.write().replace("\n", "\n\t"))
+        return "<check_type: \"%s\">%s\n</checktype>" % (self.type, self.contents.write().replace("\n", "\n\t"))

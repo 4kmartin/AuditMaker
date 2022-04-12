@@ -1,5 +1,6 @@
-from lib.Windows.custom_item_types import PASSWORD_POLICY, REGISTRY_SETTING, AUDIT_POLICY_SUBCATEGORY, item, LOCKOUT_POLICY
+from lib.Windows.custom_item_types import PASSWORD_POLICY, REGISTRY_SETTING, AUDIT_POLICY_SUBCATEGORY, LOCKOUT_POLICY
 from lib.audit_types import POLICY_SET, POLICY_DWORD, POLICY_TEXT, AUDIT_SET
+from lib.audit_tags import item
 
 ############## Implemetations
 

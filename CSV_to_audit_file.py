@@ -30,8 +30,8 @@ def main(args:list):
         else:
             path_to_file = args[1]
             csv = getfilecontents(path_to_file).replace("\"", "")
-            items = parse_file(csv)
-            savefile(path_to_csv_file.replace("csv", "audit").replace("CSV", "audit"),write_audit_file_contents(items))
+            contents = CHECK_TYPE("Windows\" version:\"2", GROUP_POLICY("Audit file for Windows", BODY(parse_file(csv))))
+            savefile(path_to_file.replace("csv", "audit").replace("CSV", "audit"),contents.write())
     except (FileNotFoundError, PermissionError):
         print("%s: is not a valid file path" % path_to_csv_file )
         print("if the file exists make sure you have permission to read it")

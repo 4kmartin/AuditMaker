@@ -1,4 +1,5 @@
 from lib.Windows.implemented_classes import *
+from lib.audit_types import *
 
 
 ############## Global Variables
