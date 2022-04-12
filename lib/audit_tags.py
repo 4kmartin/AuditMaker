@@ -26,10 +26,10 @@ class custom_item(Tag):
     description: str,
     value_type: str,
     value_data: VALUE_TYPE,
-    check_type: (str, None)=None):
+    check_type: str=None):
         self.description = description
         self.value_type = value_type
-        if isinstance(value_data, VALUE_TYPE):
+        if isinstance(value_data, VALUE_TYPE) or value_data is None:
             self.value_data = value_data
         else:
             raise PolicyTypeError(value_data, "value_data")
