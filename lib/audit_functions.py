@@ -1,4 +1,5 @@
-from lib.audit_tags import Tag, REGISTRY_SETTING, WMI_POLICY
+from lib.audit_tags import Tag
+from lib.Windows.custom_item_types import  REGISTRY_SETTING, WMI_POLICY
 from lib.audit_types import POLICY_DWORD, POLICY_TEXT
 
 def getfilecontents(path_to_file:str)->str:
