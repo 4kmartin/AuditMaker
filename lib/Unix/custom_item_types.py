@@ -31,16 +31,3 @@ class CMD_EXEC(custom_item):
         self.expect = POLICY_TEXT(expect)
         self.dont_echo_cmd = dont_echo_cmd
         
-
-
-
-"""FILE_CHECK
-FILE_CHECK_NOT
-FILE_CONTENT_CHECK
-FILE_CONTENT_CHECK_NOT
-GRAMMAR_CHECK
-PKG_CHECK
-PROCESS_CHECK
-RPM_CHECK
-SVC_PROP
-XINETD_SVC"""

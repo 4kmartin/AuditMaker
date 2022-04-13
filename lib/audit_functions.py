@@ -1,6 +1,6 @@
-from lib.audit_tags import Tag
-from lib.Windows.custom_item_types import  REGISTRY_SETTING, WMI_POLICY
-from lib.audit_types import POLICY_DWORD, POLICY_TEXT
+from lib.audit_tags import custom_item, REPORT_TAG
+
+
 
 def getfilecontents(path_to_file:str)->str:
     openfile = open(path_to_file,"r")
@@ -13,9 +13,19 @@ def savefile(path_to_file:str,data_to_save:str):
     openfile.write(data_to_save)
     openfile.close()
 
-def make_registry_item(description:str, value: (POLICY_DWORD, POLICY_TEXT), reg_key:str, reg_item: str) -> REGISTRY_SETTING:
-    if isinstance(value, POLICY_DWORD):
-        return REGISTRY_SETTING(description, "POLICY_DWORD", value, reg_key, reg_item)
-    else:
-        return REGISTRY_SETTING(description, "POLICY_TEXT", value, reg_key, reg_item)
+def make_custom_item(kwargs:dict) -> custom_item:
+    a = custom_item("description", None, None)
+    for k in kwargs:
+        a.__dict__[k] = kwargs[k]
 
+    if a.value_data is not None:
+        pass
+    if a.validate():
+        return a
+    else:
+        raise TypeError("The following item tag is invalid: %s" %str(a))
+
+def make_report(kwargs:dict) -> REPORT_TAG:
+    a = REPORT_TAG(**kwargs)
+    a.__dict__ = kwargs
+    return a

@@ -40,6 +40,9 @@ class custom_item(Tag):
         fields =  [ "%s: %s" % (str(k),str(d[k])) for k in d if d[k] is not None]
         
         return tuple(fields)
+
+    def validate(self):
+        return isinstance(self.value_data, VALUE_TYPE) or self.value_data is None
     
     def write(self) -> str:
         out = "\n<custom_item>"
@@ -65,7 +68,7 @@ class CONDITION_TAG(Tag):
         return "\n<condition type: %s>%s\n</condition>" % (self.type, str(list(self.items)).replace("\n", "\n\t").replace("[", "").replace("]", ""))
 
 
-class THEN_TAG:
+class THEN_TAG(Tag):
     
     def __init__(self,contents:[Tag]):
         if not isinstance(contents, (list,tuple,dict)):
@@ -79,7 +82,7 @@ class THEN_TAG:
         return "\n<then>%s\n</then>" % str(list(self.contents)).replace("\n", "\n\t").replace("[", "").replace("]", "")
 
 
-class ELSE_TAG:
+class ELSE_TAG(Tag):
 
     def __init__(self,contents:[Tag]):
         if not isinstance(contents, (list,tuple,dict)):
@@ -117,7 +120,7 @@ class IF_TAG(Tag):
         self.otherwise = _else
 
     def write(self) -> str:
-        return "\n\t\t<if>%s\n\t\t</if>" % "".join([str(self.condition), str(self.then), str(self.otherwise)]).replace("\n\t", "\n\t\t")
+        return "\n<if>%s\n</if>" % "".join([str(self.condition), str(self.then), str(self.otherwise)]).replace("\n", "\n\t")
    
 
 class BODY(Tag):

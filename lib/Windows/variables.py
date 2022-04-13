@@ -1,5 +1,6 @@
 from lib.Windows.implemented_classes import *
 from lib.audit_types import *
+from lib.Windows.custom_item_types import *
 
 
 ############## Global Variables
@@ -329,3 +330,11 @@ implemented_classes = {
     },
 }
 
+custom_item_type_lookup = {
+    "PASSWORD_POLICY": PASSWORD_POLICY,
+    "LOCKOUT_POLICY":LOCKOUT_POLICY,
+    "KERBEROS_POLICY":KERBEROS_POLICY,
+    "REGISTRY_SETTING":REGISTRY_SETTING,
+    "AUDIT_POLICY_SUBCATEGORY":AUDIT_POLICY_SUBCATEGORY,
+    "WMI_POLICY": WMI_POLICY,
+    }
