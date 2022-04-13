@@ -21,13 +21,14 @@ class item (Tag):
 
 
 class custom_item(Tag):
-    type = ""
+    
     def __init__(self,
     description: str,
     value_type: str,
     value_data: VALUE_TYPE,
     check_type: str=None):
-        self.description = description
+        self.type = ""
+        self.description = POLICY_TEXT(description)
         self.value_type = value_type
         if isinstance(value_data, VALUE_TYPE) or value_data is None:
             self.value_data = value_data
