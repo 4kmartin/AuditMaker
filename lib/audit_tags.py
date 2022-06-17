@@ -26,7 +26,7 @@ class custom_item(Tag):
     description: str,
     value_type: str,
     value_data: VALUE_TYPE,
-    check_type: str=None):
+    check_type: str):
         self.type = ""
         self.description = POLICY_TEXT(description)
         self.value_type = value_type

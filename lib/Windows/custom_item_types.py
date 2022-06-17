@@ -113,6 +113,33 @@ class REGISTRY_SETTING(custom_item):
         return tuple(fields)
 
 
+class AUDIT_POLICY(custom_item):
+
+    def __init__(self, description, value_type, value_data, audit_policy:str, check_type = None) -> AUDIT_POLICY :
+        super().__init__(description, value_type, value_data, check_type)
+        self.type = "AUDIT_POLICY"
+        if audit_policy in (
+            "AUDIT_ACCOUNT_LOGON","AUDIT_ACCOUNT_MANAGER",
+            "AUDIT_DIRECTORY_SERVICE_ACCESS","AUDIT_LOGON", 
+            "AUDIT_OBJECT_ACCESS", "AUDIT_POLICY_CHANGE",
+            "AUDIT_PRIVILEGE_USE", "AUDIT_DETAILED_TRACKING", "AUDIT_SYSTEM"
+        ):
+            self.audit_policy = audit_policy
+        else:
+            raise IOError
+
+
+    def enumerate_fields(self)->tuple:
+        fields = list(super().enumerate_fields())
+        ignore = tuple(custom_item("", "", POLICY_TEXT("")).__dict__.keys())
+        keep = [x for x in self.__dict__.keys() if x not in ignore]
+        for k in keep:
+            if self.__dict__[k] is not None:
+                add = "%s: %s" % (k, self.__dict__[k])
+                fields.append(add)
+        return tuple(fields)
+
+
 class AUDIT_POLICY_SUBCATEGORY(custom_item):
 
     def __init__(self, description:str, value_type:str, value_data:AUDIT_SET, audit_policy_subcategory:str, check_type:(str,None) = None):
