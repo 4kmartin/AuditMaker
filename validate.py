@@ -15,7 +15,7 @@ defined_tags = {
 
 def main(args:str):
     try:
-        path = args#[1]
+        path = args[1]
     except IndexError:
         print("You did not supply enough aruments")
         quit()
@@ -27,6 +27,7 @@ def main(args:str):
     
     if isinstance(audit, CHECK_TYPE):
         print("The file: %s, is correctly formated" % path[-path[::-1].index("\\"):])
+
     else:
         print("The file: %s, is not formatted correctly. Please attempt to address the preceding error" % path[-path[::-1].index("\\"):])
 
